@@ -62,7 +62,6 @@ const room = (namespace) => {
     
     socket.on("disconnect", () =>  {
       socket.broadcast.emit('userDisconnect', {user: removeUser(socket.uid), users: users});
-      // socket.broadcast.emit('new-message', {message: `${socket.username} has left the chat`, username: 'Administrator'});
     });
 
   });
