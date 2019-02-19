@@ -8,14 +8,14 @@ const messageStyle = {
     padding: '0px 8px',
     width: 'fit-content',
     borderRadius: '10%',
-    margin: '7px auto 7px 0',
+    margin: '5px auto 5px 0',
     color: 'black',
     backgroundColor: messageReceiveColor,
     minWidth: '10px'
 }
 const selfMessageStyle = {
     ...messageStyle, 
-    margin: '7px 0 7px auto',
+    margin: '3px 0 3px auto',
     color: 'white',
     backgroundColor: sentBackgroundColor
 }

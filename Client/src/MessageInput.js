@@ -8,6 +8,13 @@ const inputStyle = {
   borderLeft: 'none'
 };
 
+const inputStyleDark = {
+  ...inputStyle,
+  border: '2px solid rgb(141, 141, 141, 50%)',
+  backgroundColor: 'rgb(63,63,63)',
+  color: 'white',
+};
+
 const messageInputStyle = {
   position: 'absolute',
   bottom: '0',
@@ -56,7 +63,7 @@ class MessageInput extends React.Component {
       <div className="row" style={messageInputStyle}>
         <div className="col-lg-10" style={{padding: 0}}>
           <input
-            style={inputStyle}
+            style={this.props.themeDark ? inputStyleDark : inputStyle}
             value={this.state.message}
             onChange={this.onMessageChange}
             onKeyUp={this.onMessageKeyUp}

@@ -9,6 +9,11 @@ const userStyle = {
   textAlign: 'center'
 }; 
 
+const userStyleDark = {
+  ...userStyle,
+  color: 'white',
+}
+
 const selfUserStyle = {
   color: 'blue',
 };
@@ -27,11 +32,11 @@ class Users extends React.Component {
       if (user.you) {
         return <div style={selfUserStyle} key={index}>{user.username}</div>;
       }
-      return <div className="col-lg-12" style={userStyle} key={index}>{user.username}</div>;
+      return <div className="col-lg-12" style={this.props.themeDark ? userStyleDark : userStyle} key={index}>{user.username}</div>;
       
     });
     return (
-      <div className="col-lg-3" id="usersColumn">
+      <div className="col-lg-3" id={this.props.themeDark ? "usersColumnDark" : "usersColumn"}>
         { users }
       </div>
     );

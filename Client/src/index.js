@@ -16,47 +16,77 @@ const navStyle = {
     color: 'white',
     borderBottom: '2px solid rgb(109,156,159,100%)'
 };
-const routing = (
-    <Router>
-        <div>
-            <Navbar style={navStyle} collapseOnSelect>
-                <Navbar.Brand style={{color: 'white', padding: '0px 6px', margin: 0,border: '1px solid white' }}>livechat</Navbar.Brand>
-                {/* <Nav className="mr-auto">
-                    <Nav.Link href="/general">General</Nav.Link>
-                    <Nav.Link href="/admin">Admin</Nav.Link>
-                    <Nav.Link href="/users/5">Contact</Nav.Link>
-                    <Nav.Link href="/about">About</Nav.Link>
-                </Nav> */}
-                
-                {/* { localStorage.username && localStorage.username.length ? (
-                    <Navbar.Collapse style={{}} className="justify-content-end">
-                        <Navbar.Text>
-                            Signed in as: <a>{localStorage.username}</a>
-                        </Navbar.Text>
-                        <Navbar.Text>
-                            <button onClick={() => localStorage.setItem('username', '')}>Logout</button>
-                        </Navbar.Text>
-                    </Navbar.Collapse>
-                ) : (
-                    ''
-                )} */}
-                
+const navStyleDark = {
+    ...navStyle,
+    backgroundColor: 'rgb(80,80,80,80%)',
+};
+class Routing extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            themeDark: localStorage.getItem('themeDark') && localStorage.getItem('themeDark') == 0 ? 0 : 1
+        }
+    }
 
-                {/* TODO: putting username into header */}
-            </Navbar>
-            <Switch>
-                <Route exact path="/" component={App} />
-                {/* <Route path="/general" component={Chat} />
-                <Route path="/admin" component={Chat} />
-                <Route path="/users/5" component={Users} />
-                <Route path="/about" component={About} /> */}
-                <Route component={NotFound} />
-            </Switch>
-        </div>
-    </Router>
-);
+    toggleTheme = () => { 
+        this.setState({
+            themeDark : this.state.themeDark ? 0 : 1
+        }, () => {
+            localStorage.setItem('themeDark', this.state.themeDark);
+        });
+    }
 
-ReactDOM.render(routing, document.getElementById('root'));
+    render() {
+        return (
+            <Router>
+                <div>
+                    <Navbar style={this.state.themeDark ? navStyleDark : navStyle} collapseOnSelect>
+                        <Navbar.Brand 
+                            style={{color: 'white', padding: '0px 6px', margin: 0,border: '1px solid white' }}
+                            onClick={() => this.toggleTheme()}
+                        >
+                            livechat : {this.state.themeDark ? 'dark' : 'light'}
+                        </Navbar.Brand>
+                        
+                        {/* <Nav className="mr-auto">
+                            <Nav.Link href="/general">General</Nav.Link>
+                            <Nav.Link href="/admin">Admin</Nav.Link>
+                            <Nav.Link href="/users/5">Contact</Nav.Link>
+                            <Nav.Link href="/about">About</Nav.Link>
+                        </Nav> */}
+                        
+                        {/* { localStorage.username && localStorage.username.length ? (
+                            <Navbar.Collapse style={{}} className="justify-content-end">
+                                <Navbar.Text>
+                                    Signed in as: <a>{localStorage.username}</a>
+                                </Navbar.Text>
+                                <Navbar.Text>
+                                    <button onClick={() => localStorage.setItem('username', '')}>Logout</button>
+                                </Navbar.Text>
+                            </Navbar.Collapse>
+                        ) : (
+                            ''
+                        )} */}
+                        
+
+                        {/* TODO: putting username into header */}
+                    </Navbar>
+                    <App themeDark={this.state.themeDark} />
+                    {/* <Switch>
+                        <Route exact path="/" component={App}  />
+                        // <Route path="/general" component={Chat} />
+                        // <Route path="/admin" component={Chat} />
+                        // <Route path="/users/5" component={Users} />
+                        // <Route path="/about" component={About} />
+                        <Route component={NotFound} />
+                    </Switch> */}
+                </div>
+            </Router>
+        );
+    }
+}
+
+ReactDOM.render(<Routing/>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

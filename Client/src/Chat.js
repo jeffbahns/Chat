@@ -120,20 +120,18 @@ class Chat extends Component {
              <Container id="mainContainer">
                 { this.state.usernameSet ? (
                     <Row id="mainRow">
-                        {/* <Col lg="3" id="usersColumn">
-                            <Users users={this.state.users} />
-                        </Col> */}
-                        <Users users={this.state.users} />
+                        <Users users={this.state.users} themeDark={this.props.themeDark} />
 
-                        <Col lg="9" id="messagesColumn">
-                            <Messages messages={this.state.messages} sendMessage={this.sendMessage} />
+                        <Col lg="9" id={this.props.themeDark ? "messagesColumnDark" : "messagesColumn"}>
+                            <Messages messages={this.state.messages} sendMessage={this.sendMessage} themeDark={this.props.themeDark} />
                         </Col>
                     </Row>
                 ) : (
-                    <UserLogin setUsername={this.setUsername} />
+                    <UserLogin setUsername={this.setUsername} themeDark={this.props.themeDark} />
                 )}
             </Container> 
         );
     }
+
 }
 export default Chat;

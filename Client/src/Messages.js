@@ -12,7 +12,7 @@ const messagesStyle = {
   // bottom: '5%',
   overflowY: 'scroll',
   margin: 0,
-  padding: '0px 20px 0px 20px',
+  padding: '10px 20px',
   display: 'flex',
   flexDirection: 'column-reverse',
 };
@@ -32,14 +32,14 @@ class Messages extends React.Component {
       return <Message key={index} message={message} sameSender={index > 0 && messages[index].username === messages[index-1].username} />;
     });
     return (
-      <Row style={{height: '100%', margin: 0, padding: 0}}>
+      <Row style={{height: '95vh', margin: 0, padding: 0}}>
         <Row style={messagesStyle}>
           <Col style={{minHeight: 'min-content', display: 'flex', flexDirection: 'column-reverse'}}>
             { messages }
           </Col>
         </Row>
 
-        <MessageInput sendMessage={this.props.sendMessage} />
+        <MessageInput sendMessage={this.props.sendMessage} themeDark={this.props.themeDark} />
         
         {/* {<button onClick={this.onMessageSend}>Submit</button>} */}
         
