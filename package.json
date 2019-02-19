@@ -5,12 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "client-install": "npm install --prefix ../Client",
+    "client-install": "npm install --prefix Client",
     "start": "node app.js",
     "server": "nodemon app.js",
-    "client": "npm start --prefix ../Client",
+    "client": "npm start --prefix Client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix ../Client && npm run build --prefix ../Client"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix Client && npm run build --prefix Client"
   },
   "author": "",
   "license": "ISC",
