@@ -29,9 +29,7 @@ class Chat extends Component {
     }
 
     componentDidMount() {
-        const { endpoint } = this.state;
-        this.socket = socketIOClient(endpoint + this.state.path);
-        
+        this.socket = socketIOClient(this.state.path);
         this.socket.on("userLoginResponse", (data) =>  {
             this.setState({
                 user: data.user.username,
