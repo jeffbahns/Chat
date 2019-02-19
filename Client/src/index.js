@@ -71,15 +71,15 @@ class Routing extends React.Component {
 
                         {/* TODO: putting username into header */}
                     </Navbar>
-                    <App themeDark={this.state.themeDark} />
-                    {/* <Switch>
-                        <Route exact path="/" component={App}  />
-                        // <Route path="/general" component={Chat} />
-                        // <Route path="/admin" component={Chat} />
-                        // <Route path="/users/5" component={Users} />
-                        // <Route path="/about" component={About} />
+                    <Switch>
+                        <Route 
+                            exact path="/" 
+                            render={(props) => <App {...props} themeDark={this.state.themeDark} />} 
+                        />
+                        {/* // <Route path="/users/5" component={Users} /> */}
+                        {/* // <Route path="/about" component={About} /> */}
                         <Route component={NotFound} />
-                    </Switch> */}
+                    </Switch>
                 </div>
             </Router>
         );
