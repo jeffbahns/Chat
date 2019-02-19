@@ -9,6 +9,16 @@ app.use(index);
 const server = http.createServer(app);
 const io = socketIo(server);
 
+// var mysql = require('mysql');
+//First you need to create a connection to the db
+// const con = mysql.createConnection({
+//     host: process.env.DB_HOST,
+//     port: process.env.DB_PORT,
+//     user: process.env.DB_USER,
+//     password: process.env.DB_PASS,
+//     database: process.env.DB_DATABASE,
+//     debug: false
+// });
 
 var users = [];
 
@@ -32,6 +42,9 @@ const removeUser = (uid) => {
   return users.splice(index, 1);
 };
 
+const p = (printthis) => {
+  console.log(printthis);
+}
 const room = (namespace) => {
   
   var chat = io.of(namespace).on("connection", socket => {
