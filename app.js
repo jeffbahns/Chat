@@ -5,10 +5,10 @@ const axios = require("axios");
 const port = process.env.PORT || 4001;
 const index = require("./routes/index");
 const app = express();
-app.use(index);
+// app.use(index);
 const server = http.createServer(app);
 const io = socketIo(server);
-
+const path = require('path');
 // var mysql = require('mysql');
 //First you need to create a connection to the db
 // const con = mysql.createConnection({
@@ -19,6 +19,15 @@ const io = socketIo(server);
 //     database: process.env.DB_DATABASE,
 //     debug: false
 // });
+
+
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, 'Client/build')))
+
+// Anything that doesn't match the above, send back index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/Client/build/index.html'))
+})
 
 var users = [];
 
@@ -45,6 +54,7 @@ const removeUser = (uid) => {
 const p = (printthis) => {
   console.log(printthis);
 }
+
 const room = (namespace) => {
   
   var chat = io.of(namespace).on("connection", socket => {
