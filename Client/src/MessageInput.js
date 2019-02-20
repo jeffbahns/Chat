@@ -45,7 +45,7 @@ class MessageInput extends React.Component {
   onMessageKeyUp = (event) => {
     var code = event.keyCode || event.which;
     if (code === 13 && this.state.message.length) {
-      this.props.sendMessage(this.state.message, true);
+      this.props.sendMessage(this.state.message);
       this.setState({ message: '' });
     }
   }

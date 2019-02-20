@@ -23,8 +23,8 @@ const selfMessageStyle = {
 const Message = (props) => {
     return ( 
         <div className="row">
-            <div style={props.message.you ? selfMessageStyle : messageStyle}> 
-                {props.message.message} 
+            <div style={localStorage.getItem('uid') === props.message.uid ? selfMessageStyle : messageStyle}> 
+                {props.message.message}
             </div> 
         </div> 
     );

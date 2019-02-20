@@ -1,6 +1,4 @@
-import React, {
-    Component
-} from "react";
+import React from "react";
 import socketIOClient from "socket.io-client";
 
 import UserLogin from './UserLogin';
@@ -8,17 +6,15 @@ import Users from './Users';
 import Messages from './Messages';
 
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 console.log('test');
 
-class Chat extends Component {
+class Chat extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            endpoint: "http://127.0.0.1:4001",
             path: "/general",
             username: null,
             uid: null,
@@ -29,8 +25,28 @@ class Chat extends Component {
     }
 
     componentDidMount() {
-        this.socket = socketIOClient(this.state.path);
+        this.socket = socketIOClient(this.state.path, {reconnection: true, forceNew: false});
+        console.log(this.loggedIn());
+        this.socket.on("disconnect", function() {
+            console.log("Disconnected");
+        });
+          
+        this.socket.on("reconnect", function() {
+            // do not rejoin from here, since the socket.id token and/or rooms are still
+            // not available.
+            console.log("Reconnecting");
+        });
+
+        this.socket.on("connect", (data) => {
+            console.log(this.loggedIn());
+            // this.addMessage('hello test');
+            // if (this.loggedIn()) {
+            //     this.socket.emit('connect');
+            // }
+        });
+
         this.socket.on("userLoginResponse", (data) =>  {
+            // debugger;
             this.setState({
                 user: data.user.username,
                 uid: data.user.uid,
@@ -68,6 +84,10 @@ class Chat extends Component {
         this.socket.close();
     }
 
+    loggedIn = () => {
+        return localStorage.getItem('username') && localStorage.getItem('username').length > 0;
+    }
+
     setUsername = (username, uid=null) => {
         this.socket.emit("userLogin", {
             username: username,
@@ -88,17 +108,18 @@ class Chat extends Component {
         });
     }
 
-    sendMessage = (message, self) => {
-        this.addMessage(message, self);
+    sendMessage = (message) => {
+        this.addMessage(message);
         this.socket.emit("newMessage", {
-          message: message
+          message: message,
+          uid: this.state.uid,
         });
     }
 
-    addMessage = (message, self) => {
+    addMessage = (message) => {
         this.setState({
             // concat reverse, because of the css flex direction 'column-reverse'
-            messages: [{message: message, you: self}].concat(this.state.messages)
+            messages: [{message: message, uid: this.state.uid}].concat(this.state.messages)
         });
     }
 
@@ -106,13 +127,13 @@ class Chat extends Component {
         return (
              <Container id="mainContainer">
                 { this.state.usernameSet ? (
-                    <Row id="mainRow">
+                    <div className="row" id="mainRow">
                         <Users users={this.state.users} themeDark={this.props.themeDark} />
 
                         <Col lg="9" id={this.props.themeDark ? "messagesColumnDark" : "messagesColumn"}>
                             <Messages messages={this.state.messages} sendMessage={this.sendMessage} themeDark={this.props.themeDark} />
                         </Col>
-                    </Row>
+                    </div>
                 ) : (
                     <UserLogin setUsername={this.setUsername} themeDark={this.props.themeDark} />
                 )}
