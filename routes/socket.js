@@ -2,11 +2,11 @@ const socketIo = require("socket.io");
 const db = require('./db');
 
 
-var usersObj = {};
+var users = {};
 
 const getUsers = () => {
-    return Object.keys(usersObj).map((user, index) => {
-        return usersObj[user];
+    return Object.keys(users).map((user, index) => {
+        return users[user];
     });
 };
 
@@ -17,36 +17,17 @@ const generateUID = () => {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
     return text;
-}
-
-const getUserID = (username) => {
-    var timestamp = new Date().getTime();
-    var usercode = username.split('').map(l => l.charCodeAt(0)).reduce((ret, code) => ret + code, '');
-    var combined = timestamp + usercode;
-
-    // probably add in more variation, like initial socket #'s
-    uid = combined;
-    return uid;
 };
 
-const removeUser = (uid) => {
-    var userToRemove = users.find(user => user.uid === uid);
-    var index = users.indexOf(userToRemove);
-    return users.splice(index, 1);
-};
-
-const p = (printthis) => {
-    console.log(printthis);
-}
 const room = (namespace, io) => {
     var chat = io.of(namespace).on("connection", socket => {
         // socket.broadcast.emit('user-connect', {username: socket.username});
         // socket.emit('new-message', {message: `Welcome to the ${namespace} chatroom!`, username: 'Administrator'});
-        console.log(socket.id);
+        console.log('initial connection', socket.id);
 
-        socket.on("connect", () => {
-            console.log('* socket connected : ', socket.id);
-        });
+        // socket.on("connect", () => { // probably not necessary, redundant?
+        //     console.log('* socket connected : ', socket.id);
+        // });
 
         socket.on("reconnect", () => {
             console.log(' * socket attemping reconnect : ', socket.id);
@@ -56,9 +37,11 @@ const room = (namespace, io) => {
         socket.on("userLogin", (user) => {
             // todo: look for inactive users, 'sleeping'
 
-            if (user.uid && usersObj[user.uid]) { // user already logged in, same browser or whatever
+            if (user.uid && users[user.uid]) { // user already logged in, same browser or whatever
                 socket.username = user.username;
                 socket.uid = user.uid;
+                users[user.uid].sockets.push(socket.id); 
+                
                 db.getMessages((messages) => {
                     socket.emit("userLoginResponse", {
                         users: getUsers(),
@@ -71,12 +54,12 @@ const room = (namespace, io) => {
 
                 var user = {
                     ...user,
-                    uid: user.uid || generateUID(user.username)
+                    uid: user.uid || generateUID(user.username),
+                    sockets: [socket.id]
                 }; // assign a user id if first login
                 socket.username = user.username;
                 socket.uid = user.uid;
-
-                usersObj[socket.uid] = user;
+                users[socket.uid] = user;
 
                 db.getMessages((messages) => {
                     console.log('emitting with', messages);
@@ -96,9 +79,8 @@ const room = (namespace, io) => {
 
         });
 
-
         socket.on("newMessage", (data) => {
-            console.log('current user', data.uid);
+            console.log(`message from ${data.uid} at socket: ${socket.id}`);
             socket.broadcast.emit('newMessage', {
                 ...data,
                 username: socket.username
@@ -109,13 +91,23 @@ const room = (namespace, io) => {
 
         socket.on("disconnect", () => {
             console.log('* * *\nLogging out...\n* * *')
-            var deletedUser = usersObj[socket.uid];
-            delete usersObj[socket.uid];
-            console.log('deleted', deletedUser);
+            
+            // remove socket but not necessarily user, user could be connected via multiple sockets (tabs, windows)
+            var user = users[socket.uid];
+            if (!user)  { return ; } // could be scenarios when server restarts, etc
+
+            if (user.sockets.length > 1) { // multiple connections, do not remove user
+                user.sockets.splice(user.sockets.indexOf(socket.id), 1);
+                console.log(`user: ${socket.id} has sockets: `, user.sockets.filter(socket => socket != socket.id));
+                return ;
+            }
+            
+            delete users[socket.uid];
             socket.broadcast.emit('userDisconnect', {
-                user: deletedUser,
-                users: getUsers()
+                user: user,
+                users: getUsers(),
             });
+            
         });
 
     });
