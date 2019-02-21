@@ -51,8 +51,11 @@ class Chat extends React.Component {
                 user: data.user.username,
                 uid: data.user.uid,
                 usernameSet: true,
-                users: this.state.users.concat(data.users)
+                users: this.state.users.concat(data.users),
+                messages: data.messages,
             });
+
+            // could be redundant
             localStorage.setItem('username', data.user.username);
             localStorage.setItem('uid', data.user.uid);
         });
