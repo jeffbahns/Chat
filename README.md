@@ -1,4 +1,8 @@
-# Chat
+# LiveChat
+
+Currently hosted [here](https://react-live-chat.herokuapp.com/) via [Heroku](https://www.heroku.com/) 
+
+(https://react-live-chat.herokuapp.com)
 
 ## Description
 
