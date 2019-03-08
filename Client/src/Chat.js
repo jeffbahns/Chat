@@ -5,11 +5,6 @@ import UserLogin from './UserLogin';
 import Users from './Users';
 import Messages from './Messages';
 
-import Container from 'react-bootstrap/Container';
-import Col from 'react-bootstrap/Col';
-
-console.log('test');
-
 class Chat extends React.Component {
 
     constructor(props) {
@@ -128,19 +123,19 @@ class Chat extends React.Component {
 
     render() {
         return (
-             <Container id="mainContainer">
+             <div className="container" id="mainContainer">
                 { this.state.usernameSet ? (
                     <div className="row" id="mainRow">
                         <Users users={this.state.users} themeDark={this.props.themeDark} />
 
-                        <Col lg="9" id={this.props.themeDark ? "messagesColumnDark" : "messagesColumn"}>
+                        <div className="col col-lg-9"id={this.props.themeDark ? "messagesColumnDark" : "messagesColumn"}>
                             <Messages messages={this.state.messages} sendMessage={this.sendMessage} themeDark={this.props.themeDark} />
-                        </Col>
+                        </div>
                     </div>
                 ) : (
                     <UserLogin setUsername={this.setUsername} themeDark={this.props.themeDark} />
                 )}
-            </Container> 
+            </div> 
         );
     }
 
