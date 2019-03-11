@@ -88,6 +88,21 @@ const room = (namespace, io) => {
             db.addMessage(data.message, data.uid);
         });
 
+        socket.on("userTyping", () => {
+            console.log('user typing');
+            socket.broadcast.emit("userTyping", {
+                username: socket.username,
+                uid: socket.uid
+            });
+        });
+
+        socket.on("userStoppedTyping", () => {
+            console.log('user stopped typing');
+            socket.broadcast.emit("userStoppedTyping", {
+                username: socket.username
+            });
+        });
+
 
         socket.on("disconnect", () => {
             console.log('* * *\nLogging out...\n* * *')

@@ -1,9 +1,8 @@
 import React from 'react'
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 
 import MessageInput from './MessageInput';
 import Message from './Message';
+import UserTyping from './UserTyping';
 
 const messagesStyle = {
   // position: 'absolute',
@@ -32,18 +31,24 @@ class Messages extends React.Component {
       return <Message key={index} message={message} sameSender={index > 0 && messages[index].username === messages[index-1].username} />;
     });
     return (
-      <Row style={{height: '95vh', margin: 0, padding: 0}}>
-        <Row style={messagesStyle}>
-          <Col style={{minHeight: 'min-content', display: 'flex', flexDirection: 'column-reverse'}}>
+      <div className="row" style={{height: '95vh', margin: 0, padding: 0}}>
+        <div className="row" style={messagesStyle}>
+          <div className="col" style={{minHeight: 'min-content', display: 'flex', flexDirection: 'column-reverse'}}>
+            <UserTyping usersTyping={this.props.usersTyping} />
             { messages }
-          </Col>
-        </Row>
-
-        <MessageInput sendMessage={this.props.sendMessage} themeDark={this.props.themeDark} />
+          </div>
+          
+          
+        </div>
+        <MessageInput 
+          sendMessage={this.props.sendMessage} 
+          themeDark={this.props.themeDark} 
+          userTyping={this.props.userTyping}
+        />
         
         {/* {<button onClick={this.onMessageSend}>Submit</button>} */}
         
-      </Row>
+      </div>
     );
 
   }

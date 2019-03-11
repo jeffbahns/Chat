@@ -1,5 +1,8 @@
 import React from 'react'
 
+const WAIT_INTERVAL = 2000;
+const ENTER_KEY = 13;
+
 const inputStyle = {
   height: '100%',
   width: '100%',
@@ -29,22 +32,48 @@ class MessageInput extends React.Component {
     super(props);
     this.state = {
       message: '',
+      typing: false,
     }
+    this.userTypingTimeout = this.userTypingTimeout.bind(this);
+
+  }
+
+  componentWillMount() {
+    this.timer = null;
   }
 
   componentDidMount() {
       this.textInput.focus();
   }
 
+  userTypingTimeout(userTyping) {//, setState) {
+    
+    // this.props.userTyping(false);
+    userTyping(false);
+    this.setState({typing: false});
+
+  }
+
   onMessageChange = (event) => {
+    
+    if (this.state.typing) {
+      clearTimeout(this.timer);
+    } else {
+      this.props.userTyping(true);
+      this.setState({ typing: true });
+    }
+    this.timer = setTimeout(this.userTypingTimeout, WAIT_INTERVAL, this.props.userTyping);
+
     this.setState({
       message: event.target.value
     });
+    
+    // this.timer = setTimeout(this.props.userTyping(),  WAIT_INTERVAL);
   }
 
   onMessageKeyUp = (event) => {
     var code = event.keyCode || event.which;
-    if (code === 13 && this.state.message.length) {
+    if (code === ENTER_KEY && this.state.message.length) {
       this.props.sendMessage(this.state.message);
       this.setState({ message: '' });
     }

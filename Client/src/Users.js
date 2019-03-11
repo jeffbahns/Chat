@@ -1,6 +1,4 @@
 import React from 'react'
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 
 const userStyle = {
   borderBottom: '2px solid rgb(141, 141, 141, 50%)',

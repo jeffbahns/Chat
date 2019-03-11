@@ -16,20 +16,22 @@ class Chat extends React.Component {
             usernameSet: false,
             messages: [],
             users: [],
+            usersTyping: [],
         };
     }
 
     componentDidMount() {
         this.socket = socketIOClient(this.state.path, {reconnection: true, forceNew: false});
-        console.log(this.loggedIn());
-        this.socket.on("disconnect", function() {
+        this.socket.on("disconnect", () => {
             console.log("Disconnected");
         });
           
-        this.socket.on("reconnect", function() {
+        this.socket.on("reconnect", (data) => {
             // do not rejoin from here, since the socket.id token and/or rooms are still
             // not available.
+            
             console.log("Reconnecting");
+            console.log(data);
         });
 
         this.socket.on("connect", (data) => {
@@ -41,7 +43,6 @@ class Chat extends React.Component {
         });
 
         this.socket.on("userLoginResponse", (data) =>  {
-            // debugger;
             this.setState({
                 user: data.user.username,
                 uid: data.user.uid,
@@ -56,6 +57,7 @@ class Chat extends React.Component {
         });
         
         this.socket.on("userConnect", (data) => {
+            if (data.user.uid === this.state.uid) { return ; }
             this.setState({
                 users: this.state.users.concat([data.user])
             });
@@ -73,7 +75,22 @@ class Chat extends React.Component {
             });
         });
 
+        this.socket.on("userTyping", (data) => {
+            if (data.uid === this.state.uid) { return; }
+            this.setState({
+                usersTyping: this.state.usersTyping.concat([data.username])
+            });
+        });
+
+        this.socket.on("userStoppedTyping", (data) => {
+            if (data.uid === this.state.uid) { return; }
+            this.setState({
+                usersTyping: this.state.usersTyping.filter(user => user != data.username)
+            });
+        });
+
         if (localStorage.getItem('username') && localStorage.getItem('username').length) {
+            
             this.setUsername(localStorage.getItem('username'), localStorage.getItem('uid'));
         }
     }
@@ -86,7 +103,7 @@ class Chat extends React.Component {
         return localStorage.getItem('username') && localStorage.getItem('username').length > 0;
     }
 
-    setUsername = (username, uid=null) => {
+    setUsername = (username, uid = null) => {
         this.socket.emit("userLogin", {
             username: username,
             uid: uid
@@ -121,6 +138,14 @@ class Chat extends React.Component {
         });
     }
 
+    userTyping = (isTyping) => {
+        if (isTyping) {
+            this.socket.emit('userTyping');
+        } else {
+            this.socket.emit('userStoppedTyping');
+        }
+    }
+
     render() {
         return (
              <div className="container" id="mainContainer">
@@ -129,7 +154,13 @@ class Chat extends React.Component {
                         <Users users={this.state.users} themeDark={this.props.themeDark} />
 
                         <div className="col col-lg-9"id={this.props.themeDark ? "messagesColumnDark" : "messagesColumn"}>
-                            <Messages messages={this.state.messages} sendMessage={this.sendMessage} themeDark={this.props.themeDark} />
+                            <Messages 
+                                messages={this.state.messages} 
+                                sendMessage={this.sendMessage} 
+                                themeDark={this.props.themeDark}
+                                userTyping={this.userTyping}
+                                usersTyping={this.state.usersTyping}
+                            />
                         </div>
                     </div>
                 ) : (
@@ -138,6 +169,6 @@ class Chat extends React.Component {
             </div> 
         );
     }
-
 }
+
 export default Chat;
