@@ -4,12 +4,23 @@ const db = require('./db');
 
 var users = {};
 
+/*
+User of users model = {
+    username: '',
+    uid: '',
+    color: '',
+    sockets: []
+}
+*/
+
+// maps the users object to an array which is more suitable client-side
 const getUsers = () => {
     return Object.keys(users).map((user, index) => {
         return users[user];
     });
 };
 
+// generates unique user id
 const generateUID = () => {
     let text = '';
     let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -18,6 +29,17 @@ const generateUID = () => {
     }
     return text;
 };
+
+// used to assign colors for users
+const getRandomColor = () => {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+  
 
 const room = (namespace, io) => {
     var chat = io.of(namespace).on("connection", socket => {
