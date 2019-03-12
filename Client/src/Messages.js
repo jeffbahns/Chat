@@ -28,7 +28,15 @@ class Messages extends React.Component {
 
   render() {
     var messages = this.props.messages.map((message, index, messages) => {
-      return <Message key={index} message={message} sameSender={index > 0 && messages[index].username === messages[index-1].username} />;
+      
+      return (
+        <Message 
+          key={index} 
+          message={message} 
+          sameSender={messages[index+1] && messages[index].uid === messages[index+1].uid} 
+          themeDark={this.props.themeDark}
+        />
+      );
     });
     return (
       <div className="row" style={{height: '95vh', margin: 0, padding: 0}}>
