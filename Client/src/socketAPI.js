@@ -1,11 +1,14 @@
 
-// socket api
+
+/* Client-side event handlers for SocketIO */
+
 export function userLoginResponse(data) {
     console.log('logging in..');
-    console.log(data);
+    // console.log(data);
     this.setState({
         user: data.user.username,
         uid: data.user.uid,
+        color: data.user.color,
         usernameSet: true,
         users: this.state.users.concat(data.users),
         messages: data.messages,
