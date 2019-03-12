@@ -46,13 +46,38 @@ const room = (namespace, io) => {
         // socket.broadcast.emit('user-connect', {username: socket.username});
         // socket.emit('new-message', {message: `Welcome to the ${namespace} chatroom!`, username: 'Administrator'});
         console.log('initial connection', socket.id);
+        
 
         // socket.on("connect", () => { // probably not necessary, redundant?
         //     console.log('* socket connected : ', socket.id);
         // });
 
-        socket.on("reconnect", () => {
+        socket.on("attemptReconnect", (user) => {
             console.log(' * socket attemping reconnect : ', socket.id);
+            
+            socket.username = user.username;
+            socket.uid = user.uid;
+
+            
+            if (user.uid && users[user.uid]) {
+                users[user.uid].sockets.push(socket.id);
+            } else {
+                users[user.uid] = {
+                    ...user,
+                    sockets: [socket.id]
+                };
+                socket.broadcast.emit('userConnect', {
+                    user: users[socket.uid]
+                }); // tell others about new user
+            }
+
+            db.getMessages((messages) => {
+                socket.emit("reconnectResponse", {
+                    users: getUsers(),
+                    user: users[user.uid],
+                    messages: messages
+                }); // tell new user about others
+            });
         });
 
 
@@ -93,11 +118,12 @@ const room = (namespace, io) => {
                 });
 
                 socket.broadcast.emit('userConnect', {
-                    user: user
+                    user: users[socket.uid]
                 }); // tell others about new user
                 
                 console.log('* * *\nlogged in..!\n* * *');
             }
+            
 
         });
 

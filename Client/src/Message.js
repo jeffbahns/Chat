@@ -11,7 +11,7 @@ const messageStyle = {
     width: 'fit-content',
     borderRadius: '10%',
     margin: '2px auto 2px 0',
-    color: 'black',
+    color: 'white',
     backgroundColor: messageReceiveColor,
     minWidth: '10px',
     maxWidth: '500px',
@@ -48,7 +48,7 @@ class Message extends React.Component {
         return (
             this.isSelf() ? 
                 <div className="row">
-                    <div style={this.isSelf() ? selfMessageStyle : messageStyle}> 
+                    <div style={{...this.isSelf() ? selfMessageStyle : messageStyle, backgroundColor: this.props.message.color}}> 
                         {this.renderText()}
                     </div>
                 </div> 
@@ -57,7 +57,7 @@ class Message extends React.Component {
                     <div className="row">
                         <div 
                             className="row" 
-                            style={{...this.isSelf() ? selfMessageStyle : messageStyle}}> 
+                            style={{...this.isSelf() ? selfMessageStyle : messageStyle, backgroundColor: this.props.message.color}}> 
                                 {this.renderText()}
                         </div> 
                     </div> 
@@ -67,7 +67,8 @@ class Message extends React.Component {
                             {this.props.message.username}
                         </div> 
                         <div className="row">
-                            <div className="row" style={this.isSelf() ? selfMessageStyle : messageStyle}> 
+                            <div className="row" 
+                                style={{...this.isSelf() ? selfMessageStyle : messageStyle, backgroundColor: this.props.message.color}}> 
                                 {this.renderText()}
                             </div> 
                         </div> 

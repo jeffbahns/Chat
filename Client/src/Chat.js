@@ -9,6 +9,7 @@ import {
     userLoginResponse,
     disconnect, 
     reconnect,
+    reconnectResponse,
     connect,
     userConnect,
     userDisconnect,
@@ -33,6 +34,7 @@ class Chat extends React.Component {
         
         this.disconnect = disconnect.bind(this);
         this.reconnect = reconnect.bind(this);
+        this.reconnectResponse = reconnectResponse.bind(this);
         this.connect = connect.bind(this);
         this.userLoginResponse = userLoginResponse.bind(this);
         this.userConnect = userConnect.bind(this);
@@ -50,6 +52,7 @@ class Chat extends React.Component {
         
         this.socket.on("disconnect", this.disconnect);
         this.socket.on("reconnect", this.reconnect);
+        this.socket.on("reconnectResponse", this.reconnectResponse)
         this.socket.on("connect", this.connect);
         this.socket.on("userLoginResponse", this.userLoginResponse);
         this.socket.on("userConnect", this.userConnect);
@@ -103,7 +106,7 @@ class Chat extends React.Component {
     addMessage = (message) => {
         this.setState({
             // concat reverse, because of the css flex direction 'column-reverse'
-            messages: [{message: message, uid: this.state.uid}].concat(this.state.messages)
+            messages: [{message: message, uid: this.state.uid, color: this.state.color}].concat(this.state.messages)
         });
     }
 

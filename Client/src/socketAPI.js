@@ -24,9 +24,20 @@ export function reconnect(data) {
     // do not rejoin from here, since the socket.id token and/or rooms are still
     // not available.
     
-    console.log("Reconnecting");
-    // console.log(data);
-    this.login(localStorage.getItem('username'), localStorage.getItem('uid'));
+    console.log("Attempting reconnect");
+    this.socket.emit('attemptReconnect', {
+        username: localStorage.getItem('username'),
+        uid: localStorage.getItem('uid'),
+        color: this.state.color
+    });
+}
+
+export function reconnectResponse(data) {
+    console.log('successful reconnect')
+    
+    this.setState({
+        users: data.users
+    });
 }
 
 export function connect(data) {
