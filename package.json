@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm test --prefix Client",
     "client-install": "npm install --prefix Client",
     "start": "node app.js",
     "server": "nodemon app.js",
