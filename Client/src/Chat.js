@@ -5,6 +5,18 @@ import UserLogin from './UserLogin';
 import Users from './Users';
 import Messages from './Messages';
 
+import {
+    userLoginResponse,
+    disconnect, 
+    reconnect,
+    connect,
+    userConnect,
+    userDisconnect,
+    newMessage,
+    userTypingResponse,
+    userStoppedTyping,
+} from './socketAPI';
+
 class Chat extends React.Component {
 
     constructor(props) {
@@ -18,80 +30,36 @@ class Chat extends React.Component {
             users: [],
             usersTyping: [],
         };
+        
+        this.disconnect = disconnect.bind(this);
+        this.reconnect = reconnect.bind(this);
+        this.connect = connect.bind(this);
+        this.userLoginResponse = userLoginResponse.bind(this);
+        this.userConnect = userConnect.bind(this);
+        this.userDisconnect = userDisconnect.bind(this)
+        this.newMessage = newMessage.bind(this);
+        this.userTypingResponse = userTypingResponse.bind(this);
+        this.userStoppedTyping = userStoppedTyping.bind(this);
     }
 
     componentDidMount() {
-        this.socket = socketIOClient(this.state.path, {reconnection: true, forceNew: false});
-        this.socket.on("disconnect", () => {
-            console.log("Disconnected");
-        });
-          
-        this.socket.on("reconnect", (data) => {
-            // do not rejoin from here, since the socket.id token and/or rooms are still
-            // not available.
-            
-            console.log("Reconnecting");
-            console.log(data);
-        });
-
-        this.socket.on("connect", (data) => {
-            console.log(this.loggedIn());
-            // this.addMessage('hello test');
-            // if (this.loggedIn()) {
-            //     this.socket.emit('connect');
-            // }
-        });
-
-        this.socket.on("userLoginResponse", (data) =>  {
-            this.setState({
-                user: data.user.username,
-                uid: data.user.uid,
-                usernameSet: true,
-                users: this.state.users.concat(data.users),
-                messages: data.messages,
-            });
-
-            // could be redundant
-            localStorage.setItem('username', data.user.username);
-            localStorage.setItem('uid', data.user.uid);
+        this.socket = socketIOClient(this.state.path, {
+            reconnection: true, 
+            forceNew: false
         });
         
-        this.socket.on("userConnect", (data) => {
-            if (data.user.uid === this.state.uid) { return ; }
-            this.setState({
-                users: this.state.users.concat([data.user])
-            });
-        });
-
-        this.socket.on("userDisconnect", (data) => {
-            this.setState({
-                users: data.users
-            });
-        });
-
-        this.socket.on("newMessage", (message) => {
-            this.setState({
-                messages: [message].concat(this.state.messages)
-            });
-        });
-
-        this.socket.on("userTyping", (data) => {
-            if (data.uid === this.state.uid) { return; }
-            this.setState({
-                usersTyping: this.state.usersTyping.concat([data.username])
-            });
-        });
-
-        this.socket.on("userStoppedTyping", (data) => {
-            if (data.uid === this.state.uid) { return; }
-            this.setState({
-                usersTyping: this.state.usersTyping.filter(user => user != data.username)
-            });
-        });
+        this.socket.on("disconnect", this.disconnect);
+        this.socket.on("reconnect", this.reconnect);
+        this.socket.on("connect", this.connect);
+        this.socket.on("userLoginResponse", this.userLoginResponse);
+        this.socket.on("userConnect", this.userConnect);
+        this.socket.on("userDisconnect", this.userDisconnect);
+        this.socket.on("newMessage", this.newMessage);
+        this.socket.on("userTyping", this.userTypingResponse);
+        this.socket.on("userStoppedTyping", this.userStoppedTyping);
 
         if (localStorage.getItem('username') && localStorage.getItem('username').length) {
-            
-            this.setUsername(localStorage.getItem('username'), localStorage.getItem('uid'));
+            this.login(localStorage.getItem('username'), localStorage.getItem('uid'));
         }
     }
 
@@ -103,7 +71,8 @@ class Chat extends React.Component {
         return localStorage.getItem('username') && localStorage.getItem('username').length > 0;
     }
 
-    setUsername = (username, uid = null) => {
+    login = (username, uid = null) => {
+        console.log()
         this.socket.emit("userLogin", {
             username: username,
             uid: uid
@@ -164,7 +133,7 @@ class Chat extends React.Component {
                         </div>
                     </div>
                 ) : (
-                    <UserLogin setUsername={this.setUsername} themeDark={this.props.themeDark} />
+                    <UserLogin setUsername={this.login} themeDark={this.props.themeDark} />
                 )}
             </div> 
         );
