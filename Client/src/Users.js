@@ -13,7 +13,7 @@ const userStyleDark = {
 }
 
 const selfUserStyle = {
-  color: 'blue',
+  color: 'yellow',
 };
 
 class Users extends React.Component {
@@ -24,13 +24,25 @@ class Users extends React.Component {
       users: props.users
     }
   }
+  
+  // checks if the current message 
+  isSelf = (uid) => {
+    return localStorage.getItem('uid') === uid;
+  }
 
   render() {
     var users = this.props.users.map((user, index) => {
-      if (user.you) {
-        return <div style={selfUserStyle} key={index}>{user.username}</div>;
+      if (this.isSelf(user.uid)) {
+        return (
+          <div 
+            className="d-none d-lg-block col-lg-12" 
+            style={{...this.props.themeDark ? userStyleDark : userStyle, ...selfUserStyle}} 
+            key={index}>
+              {user.username}
+          </div>
+        );
       }
-      return <div className="col-lg-12" style={this.props.themeDark ? userStyleDark : userStyle} key={index}>{user.username}</div>;
+      return <div className="d-none d-lg-block col-lg-12" style={this.props.themeDark ? userStyleDark : userStyle} key={index}>{user.username}</div>;
       
     });
     return (

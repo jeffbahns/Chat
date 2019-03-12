@@ -3,17 +3,20 @@ import React from 'react'
 const WAIT_INTERVAL = 2000;
 const ENTER_KEY = 13;
 
+const BORDER_COLOR = '2px solid rgb(141, 141, 141, 50%)';
+
 const inputStyle = {
   height: '100%',
   width: '100%',
   padding: '0% 2% 0% 2%',
-  borderTop: '2px solid rgb(141, 141, 141, 50%)',
-  borderLeft: 'none'
+  border: 'none',
 };
 
 const inputStyleDark = {
-  ...inputStyle,
-  border: '2px solid rgb(141, 141, 141, 50%)',
+  height: '100%',
+  width: '100%',
+  padding: '0% 2% 0% 2%',
+  border: 'none',
   backgroundColor: 'rgb(63,63,63)',
   color: 'white',
 };
@@ -22,6 +25,8 @@ const messageInputStyle = {
   position: 'absolute',
   bottom: '0',
   width: '100%',
+  borderTop: BORDER_COLOR,
+  // height: 'fit-content',
   height: '5%',
   margin: 0,
 };
@@ -51,7 +56,6 @@ class MessageInput extends React.Component {
     // this.props.userTyping(false);
     userTyping(false);
     this.setState({typing: false});
-
   }
 
   onMessageChange = (event) => {
@@ -74,6 +78,9 @@ class MessageInput extends React.Component {
   onMessageKeyUp = (event) => {
     var code = event.keyCode || event.which;
     if (code === ENTER_KEY && this.state.message.length) {
+      clearTimeout(this.timer);
+      this.userTypingTimeout(this.props.userTyping);
+
       this.props.sendMessage(this.state.message);
       this.setState({ message: '' });
     }
@@ -90,7 +97,7 @@ class MessageInput extends React.Component {
   render() {
     return (
       <div className="row" style={messageInputStyle}>
-        <div className="col-lg-10" style={{padding: 0}}>
+        <div className="col-lg-10 col-10" style={{padding: 0}}>
           <input
             style={this.props.themeDark ? inputStyleDark : inputStyle}
             value={this.state.message}
@@ -100,7 +107,7 @@ class MessageInput extends React.Component {
             id="username" placeholder="Message" 
           ></input>
         </div>
-        <div className="col-lg-2" style={{borderTop: '2px solid rgb(141, 141, 141, 50%)', padding: 0}}>
+        <div className="col-lg-2 col-2" style={{borderLeft: BORDER_COLOR, padding: 0}}>
           <button  style={{backgroundColor: 'rgb(109,200,159,80%)', color: 'white',border: 'none', width: '100%', height: '100%'}} 
             onClick={this.onSubmitClick}>
             <b>
