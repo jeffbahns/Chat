@@ -43,10 +43,7 @@ const getRandomColor = () => {
 
 const room = (namespace, io) => {
     var chat = io.of(namespace).on("connection", socket => {
-        // socket.broadcast.emit('user-connect', {username: socket.username});
-        // socket.emit('new-message', {message: `Welcome to the ${namespace} chatroom!`, username: 'Administrator'});
         console.log('initial connection', socket.id);
-        
 
         // socket.on("connect", () => { // probably not necessary, redundant?
         //     console.log('* socket connected : ', socket.id);
@@ -92,7 +89,7 @@ const room = (namespace, io) => {
                 db.getMessages((messages) => {
                     socket.emit("userLoginResponse", {
                         users: getUsers(),
-                        user: user,
+                        user: users[user.uid],
                         messages: messages
                     }); // tell new user about others
                 });
