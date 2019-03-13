@@ -9,7 +9,7 @@ const index = require("./routes/index");
 const socket = require("./routes/socket");
 
 const app = express();
-app.use(index);
+// app.use(index);
 
 const server = http.createServer(app);
 io = socket.listen(server);
@@ -25,9 +25,7 @@ app.use(express.static(path.join(__dirname, 'Client/build')));
 
 // // Anything that doesn't match the above, send back index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname + '/Client/test.html'));
+  res.sendFile(path.join(__dirname + '/Client/build/index.html'));
 })
-
-
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
