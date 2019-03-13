@@ -3,8 +3,7 @@
 /* Client-side event handlers for SocketIO */
 
 export function userLoginResponse(data) {
-    console.log('logging in..');
-    // console.log(data);
+    console.log('Connected!');
     this.setState({
         user: data.user.username,
         uid: data.user.uid,
@@ -20,14 +19,13 @@ export function userLoginResponse(data) {
 };
 
 export function disconnect(data) {
-    console.log("Disconnected");
+    console.log("Disconnected...");
 }
 
 export function reconnect(data) {
     // do not rejoin from here, since the socket.id token and/or rooms are still
     // not available.
-    
-    console.log("Attempting reconnect");
+    console.log("Attempting reconnect...");
     this.socket.emit('attemptReconnect', {
         username: localStorage.getItem('username'),
         uid: localStorage.getItem('uid'),
@@ -36,8 +34,7 @@ export function reconnect(data) {
 }
 
 export function reconnectResponse(data) {
-    console.log('successful reconnect')
-    
+    console.log('successful reconnect!')
     this.setState({
         users: data.users
     });
@@ -85,4 +82,3 @@ export function userStoppedTyping(data) {
         usersTyping: this.state.usersTyping.filter(user => user != data.username)
     });
 }
-
