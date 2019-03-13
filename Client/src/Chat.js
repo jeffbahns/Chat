@@ -32,16 +32,6 @@ class Chat extends React.Component {
             usersTyping: [],
         };
         
-        this.disconnect = disconnect.bind(this);
-        this.reconnect = reconnect.bind(this);
-        this.reconnectResponse = reconnectResponse.bind(this);
-        this.connect = connect.bind(this);
-        this.userLoginResponse = userLoginResponse.bind(this);
-        this.userConnect = userConnect.bind(this);
-        this.userDisconnect = userDisconnect.bind(this)
-        this.newMessage = newMessage.bind(this);
-        this.userTypingResponse = userTypingResponse.bind(this);
-        this.userStoppedTyping = userStoppedTyping.bind(this);
     }
 
     componentDidMount() {
@@ -50,16 +40,16 @@ class Chat extends React.Component {
             forceNew: false
         });
         
-        this.socket.on("disconnect", this.disconnect);
-        this.socket.on("reconnect", this.reconnect);
-        this.socket.on("reconnectResponse", this.reconnectResponse)
-        this.socket.on("connect", this.connect);
-        this.socket.on("userLoginResponse", this.userLoginResponse);
-        this.socket.on("userConnect", this.userConnect);
-        this.socket.on("userDisconnect", this.userDisconnect);
-        this.socket.on("newMessage", this.newMessage);
-        this.socket.on("userTyping", this.userTypingResponse);
-        this.socket.on("userStoppedTyping", this.userStoppedTyping);
+        this.socket.on("disconnect", disconnect.bind(this));
+        this.socket.on("reconnect", reconnect.bind(this));
+        this.socket.on("reconnectResponse", reconnectResponse.bind(this));
+        this.socket.on("connect", connect.bind(this));
+        this.socket.on("userLoginResponse", userLoginResponse.bind(this));
+        this.socket.on("userConnect", userConnect.bind(this));
+        this.socket.on("userDisconnect", userDisconnect.bind(this));
+        this.socket.on("newMessage", newMessage.bind(this));
+        this.socket.on("userTyping", userTypingResponse.bind(this));
+        this.socket.on("userStoppedTyping", userStoppedTyping.bind(this));
 
         if (localStorage.getItem('username') && localStorage.getItem('username').length) {
             this.login(localStorage.getItem('username'), localStorage.getItem('uid'));
