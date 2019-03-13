@@ -102,6 +102,7 @@ const room = (namespace, io) => {
                 var user = {
                     ...user,
                     uid: user.uid || generateUID(user.username),
+                    color: getRandomColor(),
                     sockets: [socket.id]
                 }; // assign a user id if first login
                 socket.username = user.username;
@@ -109,7 +110,7 @@ const room = (namespace, io) => {
                 users[socket.uid] = user;
 
                 db.getMessages((messages) => {
-                    console.log('emitting with', messages);
+                    console.log(user, user.color);
                     socket.emit("userLoginResponse", {
                         users: getUsers(),
                         user: user,
@@ -131,7 +132,8 @@ const room = (namespace, io) => {
             console.log(`message from ${data.uid} at socket: ${socket.id}`);
             socket.broadcast.emit('newMessage', {
                 ...data,
-                username: socket.username
+                username: socket.username,
+                color: users[socket.uid].color,
             });
             db.addMessage(data.message, data.uid);
         });

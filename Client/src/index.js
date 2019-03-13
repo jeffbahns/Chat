@@ -6,7 +6,6 @@ import './styles/index.css';
 
 import App from './App';
 import NotFound from './NotFound';
-import Navbar from 'react-bootstrap/Navbar';
 
 import * as serviceWorker from './serviceWorker';
 
@@ -40,13 +39,15 @@ class Routing extends React.Component {
         return (
             <Router>
                 <div>
-                    <Navbar style={this.state.themeDark ? navStyleDark : navStyle} collapseOnSelect>
-                        <Navbar.Brand 
+                    <nav className="navbar" style={this.state.themeDark ? navStyleDark : navStyle}>
+                    {/* <Navbar style={this.state.themeDark ? navStyleDark : navStyle} collapseOnSelect> */}
+                        <nav
+                            className="navbar-brand"
                             style={{color: 'white', padding: '0px 6px', margin: 0,border: '1px solid white' }}
                             onClick={() => this.toggleTheme()}
                         >
                             livechat : {this.state.themeDark ? 'dark' : 'light'}
-                        </Navbar.Brand>
+                        </nav>
                         
                         {/* <Nav className="mr-auto">
                             <Nav.Link href="/general">General</Nav.Link>
@@ -70,7 +71,7 @@ class Routing extends React.Component {
                         
 
                         {/* TODO: putting username into header */}
-                    </Navbar>
+                    </nav>
                     <Switch>
                         <Route 
                             exact path="/" 
@@ -88,8 +89,5 @@ class Routing extends React.Component {
 
 ReactDOM.render(<Routing/>, document.getElementById('root'));
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
 // serviceWorker.unregister();
 serviceWorker.register();
